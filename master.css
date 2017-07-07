@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Inline|Wendy+One');
+
+* {
+  color: black;
+}
+html, body {
+  background-image: url('http://cdn.backgroundhost.com/backgrounds/subtlepatterns/green_dust_scratch.png');
+  background-size: cover;
+}
+nav {
+  background-color: #bfb9b3;
+  border-radius: 0;
+}
+.jumbotron {
+  margin-top: 70px !important;
+  background-color: #bfb9b3 !important;
+  width: 40% !important;
+  border-radius: 5% !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.navbar h1 {
+  font-family: 'Bungee Inline', cursive;
+  font-size: 40px;
+}
+.navbar h3 {
+  font-family: 'Bungee Inline', cursive;
+  font-size: 20px;
+}
+
+#city {
+  font-size: 40px;
+  font-family: 'Wendy One', sans-serif;
+  border-bottom: 1px solid black;
+  padding-top: 10px;
+}
+
+#date {
+  font-size: 25px;
+  font-family: 'Wendy One', sans-serif;
+}
+
+#temp {
+  font-size: 50px;
+  font-family: 'Wendy One', sans-serif;
+}
+
+#fahrcel {
+  font-size: 15px;
+  border: 1px white solid;
+  border-radius: 3;
+  box-shadow: 5px 5px 5px white;
+  font-family: 'Wendy One', sans-serif;
+  margin-bottom: 10px;
+}
+
+#weatherType {
+  font-size: 25px;
+  font-family: 'Wendy One', sans-serif;
+  padding-bottom: 10px;
+}
+
+#icon {
+  height: 100px;
+  width: 100px;
+}
+
+.col-sm-6 + .col-sm-6 {
+  border-left: 1px solid black;
+}

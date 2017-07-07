@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aaron's Weather App!</title>
+    <link rel="stylesheet" href="master.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Wendy+One" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <div class="container-fluid text-center"><h1>Aaron's Weather App <i class="fa fa-bolt" aria-hidden="true"></i></h1></div>
+    <div class="container-fluid text-center">
+      <div id="date" class="row"></div>
+      <div id="city" class="row"></div>
+      <div id="temp" class="btn row"></div>
+      <div id="weatherType" class="row"></div>
+      <div id="windSpeed" class="row"></div>
+      <img id="icon" class="row" src=""></img>
+    </div>
+  </body>
+</html>
+
+<script>
+  $(document).ready(function(){
+    //get the date
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yy = today.getFullYear()-2000;
+
+    if(dd<10) {
+        dd='0'+dd
+    }
+    if(mm<10) {
+        mm='0'+mm
+    }
+    today = mm+'-'+dd+'-'+yy;
+    $('#date').html(today);
+
+    //get location data
+    var long;
+    var lat;
+    var fTemp;
+    var cTemp;
+    $.getJSON("http://ip-api.com/json", function(data2){
+      lat = data2.lat;
+      long = data2.lon;
+
+      //API geolocation url
+        var api = 'http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+long+'&appid=a533ad560eff9c0ebc188b6671fc4b5e';
+        $.getJSON(api, function(data){
+          var weatherType = data.weather[0].description;
+          var kTemp = data.main.temp;
+          var windSpeed = Math.round(data.wind.speed*2.24*10)/10;
+          var city = data2.city+', '+data.sys.country;
+          var tempSwap = false;
+
+          //convert kelvin temps
+          var fahr = kTemp * (9/5)-459.67;
+          var cels = kTemp - 273
+          fTemp = Math.round(fahr*10)/10;
+          cTemp = Math.round(cels*10)/10;
+          var iconCode = data.weather[0].icon;
+          var icon = "http://openweathermap.org/img/w/"+iconCode+".png"
+
+          $("#city").html(city);
+          $("#weatherType").html(weatherType);
+          $("#temp").html(fTemp+' &deg;F');
+          $("#temp").click(function(){
+            if(tempSwap===false){
+              $("#temp").html(cTemp+' &deg;C');
+              tempSwap = true;
+            } else {
+              $("#temp").html(fTemp+' &deg;F');
+              tempSwap=false;
+            }
+          });
+          $("#windSpeed").html(windSpeed+" mph");
+          $('#icon').attr('src', icon);
+        });
+    });
+    });
+</script>

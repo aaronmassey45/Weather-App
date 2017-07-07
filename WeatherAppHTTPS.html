@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Aaron's Weather App!</title>
+  <link rel="stylesheet" href="master.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <nav class="navbar">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <h1 class="navbar-brand">Aaron's Weather App <i class="fa fa-bolt" aria-hidden="true"></i></h1>    
+        </div>
+        <ul class="nav navbar-nav navbar-brand navbar-right">
+          <li><h3>Free Code Camp Front End Development Project</h3></li>
+        </ul>
+      </div>
+    </nav>
+
+  <div class="container weather jumbotron text-center">
+    <div id="city" class="row"></div>
+    <div class="col-sm-6">
+      <div id="date" class="row"></div>
+      <div id="temp" class="row"></div>
+      <div id="fahrcel" class="btn row">Fahrenheit</div>
+    </div>
+    <div class="col-sm-6">
+      <img id="icon" class="row" src=""></img>
+      <div id="weatherType" class="row"></div>
+    </div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  $(document).ready(function() {
+    //get the date
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yy = today.getFullYear() - 2000;
+
+    if (dd < 10) {
+      dd = '0' + dd
+    }
+    if (mm < 10) {
+      mm = '0' + mm
+    }
+    today = mm + '-' + dd + '-' + yy;
+    $('#date').html(today);
+
+    //get location data
+    var lon;
+    var lat;
+    var fTemp;
+    var cTemp;
+    var tempType = false;
+    var icon;
+    var city;
+    var x = document.getElementById("x");   
+    if (navigator.geolocation) {       
+      navigator.geolocation.getCurrentPosition(function(position) {
+        lat = position.coords.latitude;
+        lon = position.coords.longitude;
+        var api = 'https://crossorigin.me/https://api.darksky.net/forecast/3b5c0d06f3a752d0835f20c19a09bb34/' + lat + ',' + lon;
+        $.getJSON(api, function(data) {
+          var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + '%2C' + lon + '&language=en';
+          $.getJSON(GEOCODING).done(function(location) {
+
+            city = location.results[0].address_components[2].short_name + ', ' + location.results[0].address_components[4].long_name;
+
+            var weatherType = data.currently.summary;
+            fTemp = Math.round(data.currently.temperature * 10) / 10;
+            cTemp = Math.round(((5 / 9) * (fTemp - 32)) * 10) / 10;
+            var iconType = data.currently.icon;
+            if (iconType === "clear-day") {
+              icon = "http://openweathermap.org/img/w/01d.png"
+            } else if (iconType === "clear-night") {
+              icon = "http://openweathermap.org/img/w/01n.png"
+            } else if (iconType === "cloudy") {
+              icon = "http://openweathermap.org/img/w/03d.png"
+            } else if (iconType === "partly-cloudy-day") {
+              icon = "http://openweathermap.org/img/w/02d.png"
+            } else if (iconType === "partly-cloudy-night") {
+              icon = "http://openweathermap.org/img/w/02n.png"
+            } else if (iconType === "rain") {
+              icon = "http://openweathermap.org/img/w/10d.png"
+            } else if (iconType === "snow") {
+              icon = "http://openweathermap.org/img/w/13d.png"
+            } else if (iconType === "sleet") {
+              icon = "http://openweathermap.org/img/w/13n.png"
+            } else if (iconType === "wind") {
+              icon = "http://openweathermap.org/img/w/50d.png"
+            } else if (iconType === "fog") {
+              icon = "http://openweathermap.org/img/w/50d.png"
+            } else {
+              icon = "http://openweathermap.org/img/w/03d.png"
+            }
+
+
+            $("#city").html(city);
+            $("#weatherType").html(weatherType);
+            $("#temp").html(fTemp + '&deg;');
+            $("#fahrcel").click(function() {
+              if (tempType === false) {
+                $("#temp").html(cTemp + '&deg;');
+                $("#fahrcel").html('Celsius');
+                tempType = true;
+              } else {
+                $("#temp").html(fTemp + '&deg;');
+                $("#fahrcel").html('Fahrenheit');
+                tempType = false;
+              }
+            });
+            $('#icon').attr('src', icon);
+          });
+        });
+      });   
+    } else {       
+      x.innerHTML = "Geolocation is not supported by this browser.";   
+    }
+  });
+</script>
